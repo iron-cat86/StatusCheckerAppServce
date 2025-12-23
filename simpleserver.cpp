@@ -27,30 +27,22 @@ void SimpleServer::onReadyRead()
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     if (!socket) return;
 
-    // Входящие данные можно проигнорировать, нам главное ответить по HTTP протоколу
+    int status = QRandomGenerator::global()->bounded(2);
+    QString responseBody = QString::number(status);
+    QByteArray responseData;
 
-    // Генерируем случайный ответ 0 или 1
-       int status = QRandomGenerator::global()->bounded(2);
-       QString responseBody = QString::number(status);
-       QByteArray responseData;
+    responseData.append("HTTP/1.1 200 OK\r\n");
+    responseData.append("Content-Type: text/plain\r\n");
 
-       // Формируем минимальный HTTP/1.1 ответ:
-       responseData.append("HTTP/1.1 200 OK\r\n");
-       responseData.append("Content-Type: text/plain\r\n");
+    responseData.append(QString("Content-Length: %1\r\n").arg(responseBody.length()).toUtf8());
 
-       // --- ИСПРАВЛЕННАЯ СТРОКА ТУТ ---
-       // Длина тела ответа всегда 1 символ
-       responseData.append(QString("Content-Length: %1\r\n").arg(responseBody.length()).toUtf8());
-       // -------------------------------
+    responseData.append("Connection: close\r\n");
+    responseData.append("\r\n");
+    responseData.append(responseBody.toUtf8());
 
-       responseData.append("Connection: close\r\n");
-       responseData.append("\r\n");
-       responseData.append(responseBody.toUtf8());
-
-       socket->write(responseData);
+    socket->write(responseData);
     socket->flush();
     socket->disconnectFromHost(); // Отправляем данные и закрываем сокет
-    
     qDebug() << "Responded with status:" << status;
 }
 

@@ -9,14 +9,9 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDateTime>
-#include <QLabel>      // <-- Добавляем
-#include <QPushButton> // <-- Добавляем
-#include <QVBoxLayout> // <-- Добавляем для размещения виджетов
-
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 class MainWindow : public QMainWindow
 {
