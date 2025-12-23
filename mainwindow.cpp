@@ -34,6 +34,8 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::setupUiManual() {
+    setWindowTitle("Менеджер запросов");
+
     centerWidget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(centerWidget);
 
