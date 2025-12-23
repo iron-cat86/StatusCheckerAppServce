@@ -1,0 +1,20 @@
+# CMake Cache and Build Files
+/build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Executables
+StatusCheckerApp
+StatusService
+
+# IDE specific files (QtCreator/VSCode/etc)
+*.pro.user
+*.creator
+.vscode/
+
+# Application generated files (по ТЗ их надо сохранить, но на гитхаб лучше не коммитить)
+# app_log.txt
+# counter.txt
+
