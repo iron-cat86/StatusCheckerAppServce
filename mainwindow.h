@@ -27,6 +27,7 @@ private slots:
     void sendRequest();
     void handleNetworkReply(QNetworkReply *reply);
     void resetCounter();
+    void on_infoButton_clicked();
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -34,6 +35,7 @@ protected:
 private:
     QLabel *labelCounter;
     QPushButton *pushButtonReset;
+    QPushButton *infoButton;
     QWidget *centerWidget; // Центральный виджет для фона
     QNetworkAccessManager *netManager;
     QTimer *timer;

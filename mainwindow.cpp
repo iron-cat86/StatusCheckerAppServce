@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     connect(pushButtonReset, &QPushButton::clicked, this, &MainWindow::resetCounter);
+    connect(infoButton, &QPushButton::clicked, this, &MainWindow::on_infoButton_clicked);
 
     labelCounter->setText(QString("Запросов: %1").arg(requestCounter));
 }
@@ -35,22 +37,58 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupUiManual() {
     setWindowTitle("Менеджер запросов");
-
     centerWidget = new QWidget(this);
+
     QVBoxLayout *layout = new QVBoxLayout(centerWidget);
+    layout->addStretch();
 
     labelCounter = new QLabel(QString("Запросов: %1").arg(requestCounter), centerWidget);
     labelCounter->setAlignment(Qt::AlignCenter);
     labelCounter->setStyleSheet("font-size: 24px; font-weight: bold;");
-    
+
     pushButtonReset = new QPushButton("Сбросить счетчик", centerWidget);
+    infoButton = new QPushButton("Информация", centerWidget);
+
+    labelCounter->adjustSize();
+
+    QFontMetrics metrics(labelCounter->font());
+    QString currentText = QString("Запросов: %1").arg(requestCounter);
+
+    int textWidth = metrics.horizontalAdvance(currentText) + 50;
+
+    labelCounter->setMinimumWidth(textWidth);
+    pushButtonReset->setMinimumWidth(textWidth);
+    infoButton->setMinimumWidth(textWidth);
 
     layout->addWidget(labelCounter);
-    layout->addWidget(pushButtonReset);
-    
+    layout->addWidget(pushButtonReset, 0, Qt::AlignCenter);
+    layout->addWidget(infoButton, 0, Qt::AlignCenter);
+    layout->addStretch();
+
     centerWidget->setLayout(layout);
+
     setCentralWidget(centerWidget);
     resize(400, 200);
+}
+
+void MainWindow::on_infoButton_clicked()
+{
+    QString infoText = "Приложение Менеджкер запросов (v1.0)\n\n"
+                       "Оправляет http-запросы на независимый сервис на порту 8080 каждые 5 секунд по умолчанию\n"
+                       "(или по настройкам из файла config.ini)\n\n"
+                       "🟢 Зеленый: Сервис доступен (ответ 1)\n"
+                       "🔴 Красный: Сервис доступен (ответ 0)\n"
+                       "\U0001F7E0 Оранжевый: Сервис не доступен\n\n"
+                       "Счетчик запросов хранится в локальном файле counter.txt, а также вы его видите на экране\n"
+                       "Логи в файле app_log.txt.\n\n"
+                       "Кнопка \"Cбросить счетчик\" обнуляет счетчик\n\n"
+                       "Разработчик: Анна Белова, Dec. 2025";
+
+    QMessageBox::information(
+        this,
+        "Справка о приложении",
+        infoText
+    );
 }
 
 void MainWindow::showEvent(QShowEvent *event)
