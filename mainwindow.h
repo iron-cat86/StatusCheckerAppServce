@@ -48,6 +48,7 @@ private:
     int posCounter=0;
     int negCounter=0;
     int failedCounter=0;
+    int requestID=0;
     QString serviceUrl;
     QString appLog;
     int pollInterval;

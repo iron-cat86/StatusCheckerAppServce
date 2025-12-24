@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include <QMessageBox>
+#include <QUrl>
+#include <QUrlQuery>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -7,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     , posCounter(0)
     , negCounter(0)
     , failedCounter(0)
+    , requestID(0)
 {
     setupUiManual();
     
@@ -118,36 +121,44 @@ void MainWindow::loadConfig() {
 }
 
 void MainWindow::sendRequest() {
-    QNetworkRequest request = QNetworkRequest(QUrl(serviceUrl));
+    QUrl url(serviceUrl);
+    QUrlQuery query(url);
+    query.addQueryItem("requestID", QString::number(requestID));
+    url.setQuery(query);
+    QNetworkRequest request = QNetworkRequest(url);
     request.setTransferTimeout(requestTimeout);
     netManager->get(request);
     requestCounter++;
+    requestID++;
     labelCounter->setText(QString("Всего запросов: %1").arg(requestCounter));
     saveCounterToFile();
 }
 
 void MainWindow::handleNetworkReply(QNetworkReply *reply) {
+    QByteArray rawRequestIdHeader = reply->rawHeader("X-Request-ID");
+    QString requestId = QString::fromUtf8(rawRequestIdHeader);
+
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray responseData = reply->readAll();
         QString result = QString::fromUtf8(responseData).trimmed();
 
         if (result == "1") {
             this->setStyleSheet("background-color: green;");
-            logResult("Ответ 1 (GREEN)");
+            logResult(requestId + ": Ответ 1 (GREEN)");
             posCounter++;
             labelPosCounter->setText(QString("Зеленых запросов: %1").arg(posCounter));
         } else if (result == "0") {
             this->setStyleSheet("background-color: red;");
-            logResult("Ответ 0 (RED)");
+            logResult(requestId + ": Ответ 0 (RED)");
             negCounter++;
             labelNegCounter->setText(QString("Красных запросов: %1").arg(negCounter));
         } else {
             this->setStyleSheet("background-color: gray;"); // Неизвестный ответ
-            logResult("Неизвестный ответ: " + result);
+            logResult(requestId + ": Неизвестный ответ: " + result);
         }
     } else {
         this->setStyleSheet("background-color: orange;");
-        logResult("Ошибка сети: " + reply->errorString());
+        logResult(requestId + ": Ошибка сети: " + reply->errorString());
         failedCounter++;
         labelFailedCounter->setText(QString("Неотвеченных запросов: %1").arg(failedCounter));
     }

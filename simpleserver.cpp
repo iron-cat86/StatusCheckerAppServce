@@ -51,12 +51,32 @@ void SimpleServer::onReadyRead()
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     if (!socket) return;
 
+    QByteArray requestData = socket->readAll();
+    QString requestString(requestData);
+
+    //("GET /?requestID=123 HTTP/1.1")
+    QString firstLine = requestString.split('\n').value(0);
+
+    QString requestId = "N/A"; // Значение по умолчанию, если ID не найден
+
+    if (firstLine.contains("requestID=")) {
+        int startIndex = firstLine.indexOf("requestID=") + QString("requestID=").length();
+        int endIndex = firstLine.indexOf(" ", startIndex);
+
+        if (endIndex == -1) { // Если пробела после ID нет (конец строки)
+            endIndex = firstLine.length();
+        }
+
+        requestId = firstLine.mid(startIndex, endIndex - startIndex);
+    }
+
     int status = QRandomGenerator::global()->bounded(2);
     QString responseBody = QString::number(status);
     QByteArray responseData;
 
     responseData.append("HTTP/1.1 200 OK\r\n");
     responseData.append("Content-Type: text/plain\r\n");
+    responseData.append(QString("X-Request-ID: %1\r\n").arg(requestId).toUtf8());
 
     responseData.append(QString("Content-Length: %1\r\n").arg(responseBody.length()).toUtf8());
 
@@ -67,7 +87,7 @@ void SimpleServer::onReadyRead()
     socket->write(responseData);
     socket->flush();
     socket->disconnectFromHost(); // Отправляем данные и закрываем сокет
-    QString result =  "Responded with status:" + QString::number(status) + " (Press Ctrl+C to stop gracefully)";
+    QString result =  "Responded on ID=" + requestId + " with status:" + QString::number(status) + " (Press Ctrl+C to stop gracefully)";
     Logger::getInstance().log(result);
     qDebug() << result;
 }
