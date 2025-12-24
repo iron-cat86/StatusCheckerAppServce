@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupUiManual(); 
     
     netManager = new QNetworkAccessManager(this);
-    connect(netManager, &QNetworkAccessManager::finished, 
+    connect(netManager, &QNetworkAccessManager::finished,
             this, &MainWindow::handleNetworkReply);
 
     loadConfig();
@@ -51,6 +51,12 @@ void MainWindow::setupUiManual() {
     centerWidget->setLayout(layout);
     setCentralWidget(centerWidget);
     resize(400, 200);
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    emit shown();
 }
 
 void MainWindow::loadConfig() {

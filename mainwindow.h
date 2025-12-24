@@ -20,11 +20,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+signals:
+    void shown();
 
 private slots:
     void sendRequest();
     void handleNetworkReply(QNetworkReply *reply);
     void resetCounter();
+
+protected:
+    void showEvent(QShowEvent *event) override;
 
 private:
     QLabel *labelCounter;
