@@ -12,6 +12,7 @@ class SimpleServer : public QObject
     Q_OBJECT
 public:
     explicit SimpleServer(QObject *parent = nullptr);
+    ~SimpleServer();
     void startServer(quint16 port);
 
 private slots:

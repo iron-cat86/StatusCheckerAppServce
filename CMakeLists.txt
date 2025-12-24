@@ -34,6 +34,8 @@ add_executable(StatusService
     service_main.cpp
     simpleserver.h
     simpleserver.cpp
+    logger.h
+    logger.cpp
 )
 
 # Привязываем библиотеки Qt к нашему сервису
