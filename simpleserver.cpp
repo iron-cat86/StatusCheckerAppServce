@@ -43,7 +43,7 @@ void SimpleServer::onReadyRead()
     socket->write(responseData);
     socket->flush();
     socket->disconnectFromHost(); // Отправляем данные и закрываем сокет
-    qDebug() << "Responded with status:" << status;
+    qDebug() << "Responded with status:" << status << " (Press Ctrl+C to stop gracefully)";
 }
 
 void SimpleServer::onSocketDisconnected()
