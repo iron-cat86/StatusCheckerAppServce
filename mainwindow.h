@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include "logger.h"
 
 class MainWindow : public QMainWindow
 {

@@ -5,6 +5,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , requestCounter(0)
 {
+    if (!Logger::getInstance().init("app_log.log")) {
+        qWarning("Failed to initialize logger file!");
+    }
     setupUiManual(); 
     
     netManager = new QNetworkAccessManager(this);
@@ -32,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    Logger::getInstance().close();
     saveCounterToFile();
 }
 
@@ -140,13 +144,7 @@ void MainWindow::resetCounter() {
 }
 
 void MainWindow::logResult(const QString &result) {
-    QFile file("app_log.txt");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-        QTextStream stream(&file);
-        stream << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss") 
-               << " - " << result << "\n";
-        file.close();
-    }
+     Logger::getInstance().log(result);
 }
 
 void MainWindow::saveCounterToFile() {

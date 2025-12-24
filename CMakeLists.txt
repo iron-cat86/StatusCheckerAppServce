@@ -16,6 +16,8 @@ add_executable(StatusCheckerApp
     main.cpp 
     mainwindow.h 
     mainwindow.cpp
+    logger.h
+    logger.cpp
     qrc_app.cpp
     ${StatusCheckerApp_RESOURCES}
 )
