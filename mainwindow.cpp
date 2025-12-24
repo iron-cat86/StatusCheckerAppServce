@@ -5,17 +5,16 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , requestCounter(0)
 {
-    if (!Logger::getInstance().init("app_log.log")) {
-        qWarning("Failed to initialize logger file!");
-    }
-    setupUiManual(); 
+    setupUiManual();
     
     netManager = new QNetworkAccessManager(this);
     connect(netManager, &QNetworkAccessManager::finished,
             this, &MainWindow::handleNetworkReply);
 
     loadConfig();
-    
+    if (!Logger::getInstance().init(appLog)) {
+        qWarning("Failed to initialize logger file!");
+    }
     loadCounterFromFile();
     
     timer = new QTimer(this);
@@ -106,6 +105,7 @@ void MainWindow::loadConfig() {
     serviceUrl = config->value("Settings/ServiceUrl", "http://localhost:8080").toString();
     pollInterval = config->value("Settings/PollIntervalMs", 5000).toInt();
     requestTimeout = config->value("Settings/RequestTimeoutMs", 2000).toInt();
+    appLog = config->value("Settings/AppLog", "app_log.log").toString();
 }
 
 void MainWindow::sendRequest() {

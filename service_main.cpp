@@ -21,13 +21,19 @@ int main(int argc, char *argv[])
 
     std::signal(SIGINT, handle_sigint);
 
-    SimpleServer server;
-    server.startServer(8080);
+    SimpleServer *server;
+
+    if(argc > 1)
+        server = new SimpleServer(argv[1]);
+    else
+        server = new SimpleServer();
+    server->startServer();
 
     qDebug() << "Service is running. Press Ctrl+C to stop gracefully.";
 
     int returnCode = a.exec();
 
     qDebug() << "Service shutdown complete.";
+    delete server;
     return returnCode;
 }

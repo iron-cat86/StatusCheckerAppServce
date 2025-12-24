@@ -1,9 +1,13 @@
 #include "simpleserver.h"
 #include "logger.h"
+#include <QSettings>
 
-SimpleServer::SimpleServer(QObject *parent) : QObject(parent)
+SimpleServer::SimpleServer(QString config, QObject *parent) : QObject(parent)
 {
-    if (!Logger::getInstance().init("service_log.log")) {
+    serviceConfig = config;
+    loadConfig();
+
+    if (!Logger::getInstance().init(serviceLog)) {
         qWarning("Failed to initialize logger file!");
     }
     tcpServer = new QTcpServer(this);
@@ -15,7 +19,14 @@ SimpleServer::~SimpleServer()
     Logger::getInstance().close();
 }
 
-void SimpleServer::startServer(quint16 port)
+void SimpleServer::loadConfig()
+{
+    QSettings *settings = new QSettings(serviceConfig, QSettings::IniFormat, this);
+    port = settings->value("Settings/ServicePort", 8080).toInt();
+    serviceLog = settings->value("Settings/ServiceLog", "service_log.log").toString();
+}
+
+void SimpleServer::startServer()
 {
     if (tcpServer->listen(QHostAddress::LocalHost, port)) {
         QString result = "TCP Server listening on http://localhost:" + QString::number(port);

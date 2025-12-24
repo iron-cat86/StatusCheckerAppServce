@@ -11,9 +11,9 @@ class SimpleServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit SimpleServer(QObject *parent = nullptr);
+    explicit SimpleServer(QString config = "config_service.ini", QObject *parent = nullptr);
     ~SimpleServer();
-    void startServer(quint16 port);
+    void startServer();
 
 private slots:
     void onNewConnection();
@@ -21,7 +21,12 @@ private slots:
     void onSocketDisconnected();
 
 private:
+    void loadConfig();
+
+    QString serviceConfig;
+    QString serviceLog;
     QTcpServer *tcpServer;
+    int port;
 };
 
 #endif // SIMPLESERVER_H

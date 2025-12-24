@@ -43,6 +43,7 @@ private:
     QSettings *config;
     int requestCounter;
     QString serviceUrl;
+    QString appLog;
     int pollInterval;
     int requestTimeout;
 
