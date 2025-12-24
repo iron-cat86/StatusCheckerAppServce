@@ -44,6 +44,7 @@ private:
     int requestCounter;
     QString serviceUrl;
     int pollInterval;
+    int requestTimeout;
 
     void loadConfig();
     void saveCounterToFile();

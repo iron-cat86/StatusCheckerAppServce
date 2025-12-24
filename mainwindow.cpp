@@ -105,10 +105,13 @@ void MainWindow::loadConfig() {
     config = new QSettings("config.ini", QSettings::IniFormat, this);
     serviceUrl = config->value("Settings/ServiceUrl", "http://localhost:8080").toString();
     pollInterval = config->value("Settings/PollIntervalMs", 5000).toInt();
+    requestTimeout = config->value("Settings/RequestTimeoutMs", 2000).toInt();
 }
 
 void MainWindow::sendRequest() {
-    netManager->get(QNetworkRequest(QUrl(serviceUrl)));
+    QNetworkRequest request = QNetworkRequest(QUrl(serviceUrl));
+    request.setTransferTimeout(requestTimeout);
+    netManager->get(request);
     requestCounter++;
     labelCounter->setText(QString("Запросов: %1").arg(requestCounter));
     saveCounterToFile();
