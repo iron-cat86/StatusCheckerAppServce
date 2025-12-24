@@ -35,13 +35,19 @@ protected:
 
 private:
     QLabel *labelCounter;
+    QLabel *labelPosCounter;
+    QLabel *labelNegCounter;
+    QLabel *labelFailedCounter;
     QPushButton *pushButtonReset;
     QPushButton *infoButton;
     QWidget *centerWidget; // Центральный виджет для фона
     QNetworkAccessManager *netManager;
     QTimer *timer;
     QSettings *config;
-    int requestCounter;
+    int requestCounter=0;
+    int posCounter=0;
+    int negCounter=0;
+    int failedCounter=0;
     QString serviceUrl;
     QString appLog;
     int pollInterval;
