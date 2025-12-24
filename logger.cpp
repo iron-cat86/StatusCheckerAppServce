@@ -27,7 +27,6 @@ void Logger::log(const QString& message) {
         stream << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss") 
                << " - " << message << "\n";
         stream.flush();
-        stream.reset();
     }
 }
 
